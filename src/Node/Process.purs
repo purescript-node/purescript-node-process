@@ -118,12 +118,12 @@ stdin = process.stdin
 
 -- | The standard output stream. Note that this stream cannot be closed; calling
 -- | `end` will result in an exception being thrown.
-stdout :: forall eff. Writable () (console :: CONSOLE | eff)
+stdout :: forall eff. Writable () (console :: CONSOLE, err :: EXCEPTION | eff)
 stdout = process.stdout
 
 -- | The standard error stream. Note that this stream cannot be closed; calling
 -- | `end` will result in an exception being thrown.
-stderr :: forall eff. Writable () (console :: CONSOLE | eff)
+stderr :: forall eff. Writable () (console :: CONSOLE, err :: EXCEPTION | eff)
 stderr = process.stderr
 
 -- | Check whether the process is being run inside a TTY context
