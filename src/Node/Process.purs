@@ -26,11 +26,14 @@ import Prelude
 import Control.Monad.Eff
 import Control.Monad.Eff.Console (CONSOLE())
 import Control.Monad.Eff.Exception (EXCEPTION())
-import Control.Monad.Eff.Unsafe (unsafePerformEff)
 import Data.Maybe (Maybe())
+import Data.Maybe.Unsafe (fromJust)
 import Data.StrMap (StrMap())
 import Data.StrMap as StrMap
 import Node.Stream (Readable(), Writable())
+
+import Node.Platform (Platform())
+import Node.Platform as Platform
 
 -- | An effect tracking interaction with the global `process` object.
 foreign import data PROCESS :: !
@@ -94,8 +97,8 @@ foreign import setEnv :: forall eff. String -> String -> Eff (process :: PROCESS
 pid :: Int
 pid = process.pid
 
-platform :: String
-platform = process.platform
+platform :: Platform
+platform = fromJust (Platform.fromString process.platform)
 
 -- | Cause the process to exit with the supplied integer code. An exit code
 -- | of 0 is normally considered successful, and anything else is considered a
