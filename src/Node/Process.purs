@@ -36,15 +36,10 @@ import Node.Stream (Readable(), Writable())
 foreign import data PROCESS :: !
 
 -- YOLO
-foreign import globalProcessObject :: forall props. { | props }
+foreign import process :: forall props. { | props }
 
--- | Very unsafe. Be careful. Reads a mutable property off the global `process`
--- | object.
-foreign import readMutableProperty :: forall eff a. String -> Eff eff a
-
--- | Read an immutable property off the global `process` object.
-readImmutableProperty :: forall a. String -> a
-readImmutableProperty = unsafePerformEff <<< readMutableProperty
+mutable :: forall eff a. a -> Eff eff a
+mutable = pure
 
 -- | Register a callback to be performed when the event loop empties, and
 -- | Node.js is about to exit. Asynchronous calls can be made in the callback,
@@ -65,28 +60,29 @@ foreign import onSignal :: forall eff. String -> Eff (process :: PROCESS | eff) 
 -- | Get an array containing the command line arguments. Be aware
 -- | that this can change over the course of the program.
 argv :: forall eff. Eff (process :: PROCESS | eff) (Array String)
-argv = readMutableProperty "argv"
+argv = mutable process.argv
 
 -- | Node-specific options passed to the `node` executable. Be aware that
 -- | this can change over the course of the program.
 execArgv :: forall eff. Eff (process :: PROCESS | eff) (Array String)
-execArgv = readMutableProperty "execArgv"
+execArgv = mutable process.execArgv
 
 -- | The absolute pathname of the `node` executable that started the
 -- | process.
 execPath :: forall eff. Eff (process :: PROCESS | eff) String
-execPath = readMutableProperty "execPath"
+execPath = mutable process.execPath
 
 -- | Change the current working directory of the process. If the current
 -- | directory could not be changed, an exception will be thrown.
 foreign import chdir :: forall eff. String -> Eff (err :: EXCEPTION, process :: PROCESS | eff) Unit
 
 -- | Get the current working directory of the process.
-foreign import cwd :: forall eff. Eff (process :: PROCESS | eff) String
+cwd :: forall eff. Eff (process :: PROCESS | eff) String
+cwd = process.cwd
 
 -- | Get a copy of the current environment.
 getEnv :: forall eff. Eff (process :: PROCESS | eff) (StrMap String)
-getEnv = readMutableProperty "env"
+getEnv = mutable process.env
 
 -- | Lookup a particular environment variable.
 lookupEnv :: forall eff. String -> Eff (process :: PROCESS | eff) (Maybe String)
@@ -96,10 +92,10 @@ lookupEnv k = StrMap.lookup k <$> getEnv
 foreign import setEnv :: forall eff. String -> String -> Eff (process :: PROCESS | eff) Unit
 
 pid :: Int
-pid = readImmutableProperty "pid"
+pid = process.pid
 
 platform :: String
-platform = readImmutableProperty "platform"
+platform = process.platform
 
 -- | Cause the process to exit with the supplied integer code. An exit code
 -- | of 0 is normally considered successful, and anything else is considered a
@@ -107,17 +103,18 @@ platform = readImmutableProperty "platform"
 foreign import exit :: forall eff. Int -> Eff (process :: PROCESS | eff) Unit
 
 stdin :: forall eff. Readable () (console :: CONSOLE | eff)
-stdin = readImmutableProperty "stdin"
+stdin = process.stdin
 
 stdout :: forall eff. Writable () (console :: CONSOLE | eff)
-stdout = readImmutableProperty "stdout"
+stdout = process.stdout
 
 stderr :: forall eff. Writable () (console :: CONSOLE | eff)
-stderr = readImmutableProperty "stderr"
+stderr = process.stderr
 
 -- | Check whether the process is being run inside a TTY context
-foreign import stdoutIsTTY :: forall eff. Eff (process :: PROCESS | eff) Boolean
+stdoutIsTTY :: Boolean
+stdoutIsTTY = process.stdout.isTTY
 
 -- | Get the Node.js version.
 version :: String
-version = readImmutableProperty "version"
+version = process.version
