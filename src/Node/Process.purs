@@ -31,6 +31,7 @@ import Data.Maybe.Unsafe (fromJust)
 import Data.StrMap (StrMap())
 import Data.StrMap as StrMap
 import Node.Stream (Readable(), Writable())
+import Unsafe.Coerce (unsafeCoerce)
 
 import Node.Platform (Platform())
 import Node.Platform as Platform
@@ -41,8 +42,8 @@ foreign import data PROCESS :: !
 -- YOLO
 foreign import process :: forall props. { | props }
 
-mutable :: forall eff a. a -> Eff eff a
-mutable = pure
+mkEff :: forall eff a. (Unit -> a) -> Eff eff a
+mkEff = unsafeCoerce
 
 -- | Register a callback to be performed when the event loop empties, and
 -- | Node.js is about to exit. Asynchronous calls can be made in the callback,
@@ -60,20 +61,25 @@ foreign import onExit :: forall eff. (Int -> Eff (process :: PROCESS | eff) Unit
 -- | Install a handler for a particular signal.
 foreign import onSignal :: forall eff. String -> Eff (process :: PROCESS | eff) Unit -> Eff (process :: PROCESS | eff) Unit
 
+-- | Register a callback to run as soon as the current event loop runs to
+-- | completion.
+nextTick :: forall eff. Eff eff Unit -> Eff eff Unit
+nextTick callback = mkEff \_ -> process.nextTick callback
+
 -- | Get an array containing the command line arguments. Be aware
 -- | that this can change over the course of the program.
 argv :: forall eff. Eff (process :: PROCESS | eff) (Array String)
-argv = mutable process.argv
+argv = mkEff \_ -> process.argv
 
 -- | Node-specific options passed to the `node` executable. Be aware that
 -- | this can change over the course of the program.
 execArgv :: forall eff. Eff (process :: PROCESS | eff) (Array String)
-execArgv = mutable process.execArgv
+execArgv = mkEff \_ -> process.execArgv
 
 -- | The absolute pathname of the `node` executable that started the
 -- | process.
 execPath :: forall eff. Eff (process :: PROCESS | eff) String
-execPath = mutable process.execPath
+execPath = mkEff \_ -> process.execPath
 
 -- | Change the current working directory of the process. If the current
 -- | directory could not be changed, an exception will be thrown.
@@ -85,7 +91,7 @@ cwd = process.cwd
 
 -- | Get a copy of the current environment.
 getEnv :: forall eff. Eff (process :: PROCESS | eff) (StrMap String)
-getEnv = mutable process.env
+getEnv = mkEff \_ -> process.env
 
 -- | Lookup a particular environment variable.
 lookupEnv :: forall eff. String -> Eff (process :: PROCESS | eff) (Maybe String)
