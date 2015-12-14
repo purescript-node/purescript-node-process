@@ -111,12 +111,18 @@ platform = fromJust (Platform.fromString process.platform)
 -- | failure.
 foreign import exit :: forall eff. Int -> Eff (process :: PROCESS | eff) Unit
 
+-- | The standard input stream. Note that this stream will never emit an `end`
+-- | event, so any handlers attached via `onEnd` will never be called.
 stdin :: forall eff. Readable () (console :: CONSOLE | eff)
 stdin = process.stdin
 
+-- | The standard output stream. Note that this stream cannot be closed; calling
+-- | `end` will result in an exception being thrown.
 stdout :: forall eff. Writable () (console :: CONSOLE | eff)
 stdout = process.stdout
 
+-- | The standard error stream. Note that this stream cannot be closed; calling
+-- | `end` will result in an exception being thrown.
 stderr :: forall eff. Writable () (console :: CONSOLE | eff)
 stderr = process.stderr
 
