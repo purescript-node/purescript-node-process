@@ -7,6 +7,7 @@
     "type": "git",
     "url": "git://github.com/purescript-node/purescript-node-process"
   },
+  "license": "MIT",
   "ignore": [
     "**/.*",
     "node_modules",
