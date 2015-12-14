@@ -6,6 +6,7 @@ module Node.Process
   , onSignal
   , argv
   , execArgv
+  , execPath
   , chdir
   , cwd
   , getEnv
@@ -25,11 +26,11 @@ import Prelude
 import Control.Monad.Eff
 import Control.Monad.Eff.Console (CONSOLE())
 import Control.Monad.Eff.Exception (EXCEPTION())
+import Control.Monad.Eff.Unsafe (unsafePerformEff)
 import Data.Maybe (Maybe())
 import Data.StrMap (StrMap())
 import Data.StrMap as StrMap
 import Node.Stream (Readable(), Writable())
-import Unsafe.Coerce (unsafeCoerce)
 
 -- | An effect tracking interaction with the global `process` object.
 foreign import data PROCESS :: !
@@ -43,7 +44,7 @@ foreign import readMutableProperty :: forall eff a. String -> Eff eff a
 
 -- | Read an immutable property off the global `process` object.
 readImmutableProperty :: forall a. String -> a
-readImmutableProperty = unsafeCoerce <<< readMutableProperty
+readImmutableProperty = unsafePerformEff <<< readMutableProperty
 
 -- | Register a callback to be performed when the event loop empties, and
 -- | Node.js is about to exit. Asynchronous calls can be made in the callback,
