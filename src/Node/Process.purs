@@ -12,6 +12,7 @@ module Node.Process
   , getEnv
   , lookupEnv
   , setEnv
+  , Pid(..)
   , pid
   , platform
   , exit
@@ -100,7 +101,12 @@ lookupEnv k = StrMap.lookup k <$> getEnv
 -- | Set an environment variable.
 foreign import setEnv :: forall eff. String -> String -> Eff (process :: PROCESS | eff) Unit
 
-pid :: Int
+newtype Pid = Pid Int
+
+runPid :: Pid -> Int
+runPid (Pid x) = x
+
+pid :: Pid
 pid = process.pid
 
 platform :: Platform
