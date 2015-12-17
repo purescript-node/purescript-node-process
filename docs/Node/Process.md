@@ -109,10 +109,17 @@ setEnv :: forall eff. String -> String -> Eff (process :: PROCESS | eff) Unit
 
 Set an environment variable.
 
+#### `Pid`
+
+``` purescript
+newtype Pid
+  = Pid Int
+```
+
 #### `pid`
 
 ``` purescript
-pid :: Int
+pid :: Pid
 ```
 
 #### `platform`
@@ -143,7 +150,7 @@ event, so any handlers attached via `onEnd` will never be called.
 #### `stdout`
 
 ``` purescript
-stdout :: forall eff. Writable () (console :: CONSOLE | eff)
+stdout :: forall eff. Writable () (console :: CONSOLE, err :: EXCEPTION | eff)
 ```
 
 The standard output stream. Note that this stream cannot be closed; calling
@@ -152,7 +159,7 @@ The standard output stream. Note that this stream cannot be closed; calling
 #### `stderr`
 
 ``` purescript
-stderr :: forall eff. Writable () (console :: CONSOLE | eff)
+stderr :: forall eff. Writable () (console :: CONSOLE, err :: EXCEPTION | eff)
 ```
 
 The standard error stream. Note that this stream cannot be closed; calling

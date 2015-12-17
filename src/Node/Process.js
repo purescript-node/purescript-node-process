@@ -1,12 +1,15 @@
 "use strict";
 // module Node.Process
 
+/* global exports */
+/* global process */
+
 exports.process = process;
 
 exports.onBeforeExit = function(callback) {
     return function() {
         process.on('beforeExit', callback);
-    }
+    };
 };
 
 exports.onExit = function(callback) {
