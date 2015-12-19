@@ -115,7 +115,7 @@ platform = fromJust (Platform.fromString process.platform)
 -- | Cause the process to exit with the supplied integer code. An exit code
 -- | of 0 is normally considered successful, and anything else is considered a
 -- | failure.
-foreign import exit :: forall eff. Int -> Eff (process :: PROCESS | eff) Unit
+foreign import exit :: forall eff a. Int -> Eff (process :: PROCESS | eff) a
 
 -- | The standard input stream. Note that this stream will never emit an `end`
 -- | event, so any handlers attached via `onEnd` will never be called.

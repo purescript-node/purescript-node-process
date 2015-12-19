@@ -131,7 +131,7 @@ platform :: Platform
 #### `exit`
 
 ``` purescript
-exit :: forall eff. Int -> Eff (process :: PROCESS | eff) Unit
+exit :: forall eff a. Int -> Eff (process :: PROCESS | eff) a
 ```
 
 Cause the process to exit with the supplied integer code. An exit code
