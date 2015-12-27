@@ -20,7 +20,7 @@ exports.onExit = function(callback) {
     };
 };
 
-exports.onSignal = function(signal) {
+exports.onSignalImpl = function(signal) {
     return function(callback) {
         return function() {
             process.on(signal, callback);

@@ -12,7 +12,6 @@ module Node.Process
   , getEnv
   , lookupEnv
   , setEnv
-  , Pid(..)
   , pid
   , platform
   , exit
@@ -31,6 +30,9 @@ import Data.Maybe (Maybe())
 import Data.Maybe.Unsafe (fromJust)
 import Data.StrMap (StrMap())
 import Data.StrMap as StrMap
+import Data.Posix (Pid())
+import Data.Posix.Signal (Signal())
+import Data.Posix.Signal as Signal
 import Node.Stream (Readable(), Writable())
 import Unsafe.Coerce (unsafeCoerce)
 
@@ -59,8 +61,11 @@ foreign import onBeforeExit :: forall eff. Eff (process :: PROCESS | eff) Unit -
 -- | to exit with.
 foreign import onExit :: forall eff. (Int -> Eff (process :: PROCESS | eff) Unit) -> Eff (process :: PROCESS | eff) Unit
 
+foreign import onSignalImpl :: forall eff. String -> Eff (process :: PROCESS | eff) Unit -> Eff (process :: PROCESS | eff) Unit
+
 -- | Install a handler for a particular signal.
-foreign import onSignal :: forall eff. String -> Eff (process :: PROCESS | eff) Unit -> Eff (process :: PROCESS | eff) Unit
+onSignal :: forall eff. Signal -> Eff (process :: PROCESS | eff) Unit -> Eff (process :: PROCESS | eff) Unit
+onSignal sig = onSignalImpl (Signal.toString sig)
 
 -- | Register a callback to run as soon as the current event loop runs to
 -- | completion.
@@ -100,11 +105,6 @@ lookupEnv k = StrMap.lookup k <$> getEnv
 
 -- | Set an environment variable.
 foreign import setEnv :: forall eff. String -> String -> Eff (process :: PROCESS | eff) Unit
-
-newtype Pid = Pid Int
-
-runPid :: Pid -> Int
-runPid (Pid x) = x
 
 pid :: Pid
 pid = process.pid
