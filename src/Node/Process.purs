@@ -19,6 +19,7 @@ module Node.Process
   , stdout
   , stderr
   , stdoutIsTTY
+  , stderrIsTTY
   , version
   ) where
 
@@ -132,9 +133,17 @@ stdout = process.stdout
 stderr :: forall eff. Writable () (console :: CONSOLE, err :: EXCEPTION | eff)
 stderr = process.stderr
 
--- | Check whether the process is being run inside a TTY context
+-- | Check whether the standard output stream appears to be attached to a TTY.
+-- | It is a good idea to check this before printing ANSI codes to stdout
+-- | (e.g. for coloured text in the terminal).
 stdoutIsTTY :: Boolean
 stdoutIsTTY = process.stdout.isTTY
+
+-- | Check whether the standard error stream appears to be attached to a TTY.
+-- | It is a good idea to check this before printing ANSI codes to stderr
+-- | (e.g. for coloured text in the terminal).
+stderrIsTTY :: Boolean
+stderrIsTTY = process.stderr.isTTY
 
 -- | Get the Node.js version.
 version :: String
