@@ -24,11 +24,11 @@ module Node.Process
   ) where
 
 import Prelude
-import Control.Monad.Eff
+import Partial.Unsafe (unsafePartial)
+import Control.Monad.Eff (Eff)
 import Control.Monad.Eff.Console (CONSOLE())
 import Control.Monad.Eff.Exception (EXCEPTION())
-import Data.Maybe (Maybe())
-import Data.Maybe.Unsafe (fromJust)
+import Data.Maybe (Maybe(), fromJust)
 import Data.StrMap (StrMap())
 import Data.StrMap as StrMap
 import Data.Posix (Pid())
@@ -111,7 +111,7 @@ pid :: Pid
 pid = process.pid
 
 platform :: Platform
-platform = fromJust (Platform.fromString process.platform)
+platform = unsafePartial $ fromJust (Platform.fromString process.platform)
 
 -- | Cause the process to exit with the supplied integer code. An exit code
 -- | of 0 is normally considered successful, and anything else is considered a
