@@ -111,7 +111,7 @@ pid :: Pid
 pid = process.pid
 
 platform :: Platform
-platform = unsafePartial $ fromJust (Platform.fromString process.platform)
+platform = unsafePartial $ fromJust $ Platform.fromString process.platform
 
 -- | Cause the process to exit with the supplied integer code. An exit code
 -- | of 0 is normally considered successful, and anything else is considered a
