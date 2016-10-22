@@ -3,7 +3,7 @@
 module Node.Globals where
 
 import Control.Monad.Eff
-import Node.FS (FS())
+import Node.FS (FS)
 
 -- | The name of the directory that the currently executing script resides in.
 -- |

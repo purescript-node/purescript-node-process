@@ -3,7 +3,6 @@
 module Node.Platform where
 
 import Prelude
-import Data.Function (on)
 import Data.Maybe (Maybe(..))
 
 data Platform
@@ -36,8 +35,5 @@ instance showPlatform :: Show Platform where
   show SunOS   = "SunOS"
   show Win32   = "Win32"
 
-instance eqPlatform :: Eq Platform where
-  eq = eq `on` toString
-
-instance ordPlatform :: Ord Platform where
-  compare = compare `on` toString
+derive instance eqPlatform :: Eq Platform
+derive instance ordPlatform :: Ord Platform

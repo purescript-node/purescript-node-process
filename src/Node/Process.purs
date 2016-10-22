@@ -1,6 +1,6 @@
 -- | Bindings to the global `process` object in Node.js. See also [the Node API documentation](https://nodejs.org/api/process.html)
 module Node.Process
-  ( PROCESS()
+  ( PROCESS
   , onBeforeExit
   , onExit
   , onSignal
@@ -24,21 +24,25 @@ module Node.Process
   ) where
 
 import Prelude
-import Partial.Unsafe (unsafePartial)
-import Control.Monad.Eff (Eff)
-import Control.Monad.Eff.Console (CONSOLE())
-import Control.Monad.Eff.Exception (EXCEPTION())
-import Data.Maybe (Maybe(), fromJust)
-import Data.StrMap (StrMap())
-import Data.StrMap as StrMap
-import Data.Posix (Pid())
-import Data.Posix.Signal (Signal())
-import Data.Posix.Signal as Signal
-import Node.Stream (Readable(), Writable())
-import Unsafe.Coerce (unsafeCoerce)
 
-import Node.Platform (Platform())
+import Control.Monad.Eff (Eff)
+import Control.Monad.Eff.Console (CONSOLE)
+import Control.Monad.Eff.Exception (EXCEPTION)
+
+import Data.Maybe (Maybe, fromJust)
+import Data.Posix (Pid)
+import Data.Posix.Signal (Signal)
+import Data.Posix.Signal as Signal
+import Data.StrMap (StrMap)
+import Data.StrMap as StrMap
+
+import Node.Platform (Platform)
 import Node.Platform as Platform
+import Node.Stream (Readable, Writable)
+
+import Partial.Unsafe (unsafePartial)
+
+import Unsafe.Coerce (unsafeCoerce)
 
 -- | An effect tracking interaction with the global `process` object.
 foreign import data PROCESS :: !
