@@ -25,7 +25,7 @@ module Node.Process
 
 import Prelude
 
-import Control.Monad.Eff (Eff)
+import Control.Monad.Eff (Eff, kind Effect)
 import Control.Monad.Eff.Console (CONSOLE)
 import Control.Monad.Eff.Exception (EXCEPTION)
 
@@ -45,7 +45,7 @@ import Partial.Unsafe (unsafePartial)
 import Unsafe.Coerce (unsafeCoerce)
 
 -- | An effect tracking interaction with the global `process` object.
-foreign import data PROCESS :: !
+foreign import data PROCESS :: Effect
 
 -- YOLO
 foreign import process :: forall props. { | props }
