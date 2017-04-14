@@ -94,7 +94,7 @@ execPath = mkEff \_ -> process.execPath
 
 -- | Change the current working directory of the process. If the current
 -- | directory could not be changed, an exception will be thrown.
-foreign import chdir :: forall eff. String -> Eff (err :: EXCEPTION, process :: PROCESS | eff) Unit
+foreign import chdir :: forall eff. String -> Eff (exception :: EXCEPTION, process :: PROCESS | eff) Unit
 
 -- | Get the current working directory of the process.
 cwd :: forall eff. Eff (process :: PROCESS | eff) String
@@ -129,12 +129,12 @@ stdin = process.stdin
 
 -- | The standard output stream. Note that this stream cannot be closed; calling
 -- | `end` will result in an exception being thrown.
-stdout :: forall eff. Writable () (console :: CONSOLE, err :: EXCEPTION | eff)
+stdout :: forall eff. Writable () (console :: CONSOLE, exception :: EXCEPTION | eff)
 stdout = process.stdout
 
 -- | The standard error stream. Note that this stream cannot be closed; calling
 -- | `end` will result in an exception being thrown.
-stderr :: forall eff. Writable () (console :: CONSOLE, err :: EXCEPTION | eff)
+stderr :: forall eff. Writable () (console :: CONSOLE, exception :: EXCEPTION | eff)
 stderr = process.stderr
 
 -- | Check whether the standard output stream appears to be attached to a TTY.
