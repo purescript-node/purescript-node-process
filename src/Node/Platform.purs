@@ -30,14 +30,15 @@ toString Android = "android"
 -- | Attempt to parse a `Platform` value from a string, in the format returned
 -- | by Node.js' `process.platform`.
 fromString :: String -> Maybe Platform
-fromString "aix"     = AIX
-fromString "darwin"  = Darwin
-fromString "freebsd" = FreeBSD
-fromString "linux"   = Linux
-fromString "openbsd" = OpenBSD
-fromString "sunos"   = SunOS
-fromString "win32"   = Win32
-fromString "android" = Android
+fromString "aix"     = Just AIX
+fromString "darwin"  = Just Darwin
+fromString "freebsd" = Just FreeBSD
+fromString "linux"   = Just Linux
+fromString "openbsd" = Just OpenBSD
+fromString "sunos"   = Just SunOS
+fromString "win32"   = Just Win32
+fromString "android" = Just Android
+fromString _         = Nothing
 
 instance showPlatform :: Show Platform where
   show AIX     = "AIX"
