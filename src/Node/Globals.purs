@@ -2,8 +2,7 @@
 -- | documentation](https://nodejs.org/api/globals.html).
 module Node.Globals where
 
-import Control.Monad.Eff
-import Node.FS (FS)
+import Effect (Effect)
 
 -- | The name of the directory that the currently executing script resides in.
 -- |
@@ -24,4 +23,4 @@ foreign import unsafeRequire :: forall a. String -> a
 -- | `require.resolve()`. Use the internal `require` machinery to look up the
 -- | location of a module, but rather than loading the module, just return the
 -- | resolved filename.
-foreign import requireResolve :: forall eff. String -> Eff (fs :: FS | eff) String
+foreign import requireResolve :: String -> Effect String
