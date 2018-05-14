@@ -12,14 +12,12 @@
     "output"
   ],
   "dependencies": {
-    "purescript-console": "^3.0.0",
-    "purescript-exceptions": "^3.0.0",
-    "purescript-maps": "^3.0.0",
-    "purescript-maybe": "^3.0.0",
-    "purescript-node-fs": "^4.0.0",
-    "purescript-node-streams": "^3.0.0",
-    "purescript-posix-types": "^3.0.0",
-    "purescript-unsafe-coerce": "^3.0.0",
-    "purescript-partial": "^1.2.0"
+    "purescript-effect": "#compiler/0.12",
+    "purescript-foreign-object": "#compiler/0.12",
+    "purescript-maybe": "#compiler/0.12",
+    "purescript-node-streams": "#compiler/0.12",
+    "purescript-posix-types": "#compiler/0.12",
+    "purescript-unsafe-coerce": "#compiler/0.12",
+    "purescript-prelude": "#compiler/0.12"
   }
 }
