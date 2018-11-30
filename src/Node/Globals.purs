@@ -7,13 +7,13 @@ import Effect (Effect)
 -- | The name of the directory that the currently executing script resides in.
 -- |
 -- | Note that this will probably not give you a very useful answer unless you
--- | have bundled up your PureScript code using `psc-bundle`!
+-- | have bundled up your PureScript code using `purs bundle`!
 foreign import __dirname :: String
 
 -- | The absolute path of the code file being executed.
 -- |
 -- | Note that this will probably not give you a very useful answer unless you
--- | have bundled up your PureScript code using `psc-bundle`!
+-- | have bundled up your PureScript code using `purs bundle`!
 foreign import __filename :: String
 
 -- | Just calls `require`. You might also consider using the FFI instead. This
