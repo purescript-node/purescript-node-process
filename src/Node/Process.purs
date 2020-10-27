@@ -11,6 +11,7 @@ module Node.Process
   , getEnv
   , lookupEnv
   , setEnv
+  , unsetEnv
   , pid
   , platform
   , exit
@@ -100,6 +101,10 @@ lookupEnv k = FO.lookup k <$> getEnv
 
 -- | Set an environment variable.
 foreign import setEnv :: String -> String -> Effect Unit
+
+-- | Delete an environment variable.
+-- | Use case: to hide secret environment variable from child processes.
+foreign import unsetEnv :: String -> Effect Unit
 
 pid :: Pid
 pid = process.pid
