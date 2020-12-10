@@ -16,6 +16,22 @@ exports.onExit = function (callback) {
   };
 };
 
+exports.onUncaughtException = function (callback) {
+  return function () {
+    process.on("uncaughtException", function (error) {
+      callback(error)();
+    });
+  };
+};
+
+exports.onUnhandledRejection = function (callback) {
+  return function () {
+    process.on("unhandledRejection", function (error, promise) {
+      callback(error)(promise)();
+    });
+  };
+};
+
 exports.onSignalImpl = function (signal) {
   return function (callback) {
     return function () {

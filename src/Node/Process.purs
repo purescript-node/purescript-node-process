@@ -3,6 +3,8 @@ module Node.Process
   ( onBeforeExit
   , onExit
   , onSignal
+  , onUncaughtException
+  , onUnhandledRejection
   , argv
   , execArgv
   , execPath
@@ -24,17 +26,16 @@ module Node.Process
 
 import Prelude
 
-import Effect (Effect)
-
 import Data.Maybe (Maybe)
 import Data.Posix (Pid)
 import Data.Posix.Signal (Signal)
 import Data.Posix.Signal as Signal
+import Effect (Effect)
+import Effect.Exception (Error)
 import Foreign.Object as FO
 import Node.Platform (Platform)
 import Node.Platform as Platform
 import Node.Stream (Readable, Writable)
-
 import Unsafe.Coerce (unsafeCoerce)
 
 -- YOLO
@@ -55,6 +56,23 @@ foreign import onBeforeExit :: Effect Unit -> Effect Unit
 -- | The argument to the callback is the exit code which the process is about
 -- | to exit with.
 foreign import onExit :: (Int -> Effect Unit) -> Effect Unit
+
+-- | Install a handler for uncaught exceptions. The callback will be called
+-- | when the process emits the `uncaughtException` event. The handler
+-- | currently does not expose the second `origin` argument from the Node 12
+-- | version of this event to maintain compatibility with older Node versions.
+foreign import onUncaughtException :: (Error -> Effect Unit) -> Effect Unit
+
+-- | Install a handler for unhandled promise rejections. The callback will be
+-- | called when the process emits the `unhandledRejection` event.
+-- |
+-- | The first argument to the handler can be whatever type the unhandled
+-- | Promise yielded on rejection (typically, but not necessarily, an `Error`).
+-- |
+-- | The handler currently does not expose the type of the second argument,
+-- | which is a `Promise`, in order to allow users of this library to choose
+-- | their own PureScript `Promise` bindings.
+foreign import onUnhandledRejection :: forall a b. (a -> b -> Effect Unit) -> Effect Unit
 
 foreign import onSignalImpl :: String -> Effect Unit -> Effect Unit
 
