@@ -13,7 +13,7 @@ module Node.Process
   , chdir
   , cwd
   , getEnv
-  , getEnv'
+  , env
   , lookupEnv
   , setEnv
   , unsetEnv
@@ -125,16 +125,17 @@ foreign import chdir :: String -> Effect Unit
 cwd :: Effect String
 cwd = process.cwd
 
--- | Get the current environment.
+-- | Get a copy of the current environment.
 getEnv :: Effect (FO.Object String)
-getEnv = STGlobal.toEffect (FO.freezeST getEnv')
+getEnv = STGlobal.toEffect (FO.freezeST env)
 
-getEnv' :: STObject Global String
-getEnv' = process.env
+-- | Mutable reference to the current environment.
+env :: STObject Global String
+env = process.env
 
 -- | Lookup a particular environment variable.
 lookupEnv :: String -> Effect (Maybe String)
-lookupEnv k = STGlobal.toEffect (STObject.peek k getEnv')
+lookupEnv k = STGlobal.toEffect (STObject.peek k env)
 
 -- | Set an environment variable.
 foreign import setEnv :: String -> String -> Effect Unit
