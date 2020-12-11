@@ -6,11 +6,14 @@ module Node.Process
   , onUncaughtException
   , onUnhandledRejection
   , argv
+  , argv'
   , execArgv
+  , execArgv'
   , execPath
   , chdir
   , cwd
   , getEnv
+  , getEnv'
   , lookupEnv
   , setEnv
   , unsetEnv
@@ -27,6 +30,10 @@ module Node.Process
 
 import Prelude
 
+import Control.Monad.ST.Global (Global)
+import Control.Monad.ST.Global as STGlobal
+import Data.Array.ST (STArray)
+import Data.Array.ST as STArray
 import Data.Maybe (Maybe)
 import Data.Posix (Pid)
 import Data.Posix.Signal (Signal)
@@ -34,6 +41,8 @@ import Data.Posix.Signal as Signal
 import Effect (Effect)
 import Effect.Exception (Error)
 import Foreign.Object as FO
+import Foreign.Object.ST (STObject)
+import Foreign.Object.ST as STObject
 import Node.Platform (Platform)
 import Node.Platform as Platform
 import Node.Stream (Readable, Writable)
@@ -86,15 +95,22 @@ onSignal sig = onSignalImpl (Signal.toString sig)
 nextTick :: Effect Unit -> Effect Unit
 nextTick callback = mkEffect \_ -> process.nextTick callback
 
--- | Get an array containing the command line arguments. Be aware
--- | that this can change over the course of the program.
+-- | Get an array containing the command line arguments.
 argv :: Effect (Array String)
-argv = mkEffect \_ -> process.argv
+argv = STGlobal.toEffect (STArray.freeze argv')
 
--- | Node-specific options passed to the `node` executable. Be aware that
--- | this can change over the course of the program.
+-- | Get the mutable array containing the command line arguments.
+argv' :: STArray Global String
+argv' = process.argv
+
+-- | Node-specific options passed to the `node` executable.
 execArgv :: Effect (Array String)
-execArgv = mkEffect \_ -> process.execArgv
+execArgv = STGlobal.toEffect (STArray.freeze execArgv')
+
+-- | Mutable array of node-specific options passed to the
+-- | `node` executable.
+execArgv' :: STArray Global String
+execArgv' = process.execArgv
 
 -- | The absolute pathname of the `node` executable that started the
 -- | process.
@@ -109,13 +125,16 @@ foreign import chdir :: String -> Effect Unit
 cwd :: Effect String
 cwd = process.cwd
 
--- | Get a copy of the current environment.
+-- | Get the current environment.
 getEnv :: Effect (FO.Object String)
-getEnv = mkEffect \_ -> process.env
+getEnv = STGlobal.toEffect (FO.freezeST getEnv')
+
+getEnv' :: STObject Global String
+getEnv' = process.env
 
 -- | Lookup a particular environment variable.
 lookupEnv :: String -> Effect (Maybe String)
-lookupEnv k = FO.lookup k <$> getEnv
+lookupEnv k = STGlobal.toEffect (STObject.peek k getEnv')
 
 -- | Set an environment variable.
 foreign import setEnv :: String -> String -> Effect Unit

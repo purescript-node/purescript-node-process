@@ -12,12 +12,14 @@
     "output"
   ],
   "dependencies": {
+    "purescript-arrays": "master",
     "purescript-effect": "master",
     "purescript-foreign-object": "master",
     "purescript-maybe": "master",
     "purescript-node-streams": "master",
     "purescript-posix-types": "master",
     "purescript-unsafe-coerce": "master",
-    "purescript-prelude": "master"
+    "purescript-prelude": "master",
+    "purescript-st": "master"
   }
 }
