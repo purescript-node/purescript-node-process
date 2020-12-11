@@ -46,20 +46,6 @@ exports.chdir = function (dir) {
   };
 };
 
-exports.setEnv = function (var_) {
-  return function (val) {
-    return function () {
-      process.env[var_] = val;
-    };
-  };
-};
-
-exports.unsetEnv = function (var_) {
-  return function () {
-    delete process.env[var_];
-  };
-};
-
 exports.exit = function (code) {
   return function () {
     process.exit(code);

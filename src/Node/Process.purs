@@ -138,11 +138,13 @@ lookupEnv :: String -> Effect (Maybe String)
 lookupEnv k = STGlobal.toEffect (STObject.peek k env)
 
 -- | Set an environment variable.
-foreign import setEnv :: String -> String -> Effect Unit
+setEnv :: String -> String -> Effect Unit
+setEnv k v = void $ STGlobal.toEffect (STObject.poke k v env)
 
 -- | Delete an environment variable.
 -- | Use case: to hide secret environment variable from child processes.
-foreign import unsetEnv :: String -> Effect Unit
+unsetEnv :: String -> Effect Unit
+unsetEnv k = void $ STGlobal.toEffect (STObject.delete k env)
 
 pid :: Pid
 pid = process.pid
