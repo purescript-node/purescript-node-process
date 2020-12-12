@@ -115,7 +115,7 @@ getEnv = copyObject process.env
 
 -- | Lookup a particular environment variable.
 lookupEnv :: String -> Effect (Maybe String)
-lookupEnv k = FO.lookup k <$> getEnv
+lookupEnv k = lookupMutableObject k process.env
 
 -- | Set an environment variable.
 foreign import setEnv :: String -> String -> Effect Unit
@@ -176,3 +176,7 @@ foreign import data MutableObject :: Type -> Type
 
 foreign import copyArray :: forall a. MutableArray a -> Effect (Array a)
 foreign import copyObject :: forall a. MutableObject a -> Effect (FO.Object a)
+
+lookupMutableObject :: forall a. String -> MutableObject a -> Effect (Maybe a)
+lookupMutableObject k o =
+  mkEffect \_ -> FO.lookup k (unsafeCoerce o)
