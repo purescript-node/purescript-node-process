@@ -6,7 +6,9 @@ module Node.Process
   , onUncaughtException
   , onUnhandledRejection
   , argv
+  , setArgv
   , execArgv
+  , setExecArgv
   , execPath
   , chdir
   , cwd
@@ -90,9 +92,17 @@ nextTick callback = mkEffect \_ -> process.nextTick callback
 argv :: Effect (Array String)
 argv = copyArray process.argv
 
+-- | Overwrite the array containing the command line arguments.
+setArgv :: Array String -> Effect Unit
+setArgv as = replaceArray as process.argv
+
 -- | Node-specific options passed to the `node` executable.
 execArgv :: Effect (Array String)
 execArgv = copyArray process.execArgv
+
+-- | Overwrite the array containing the node-specific options.
+setExecArgv :: Array String -> Effect Unit
+setExecArgv as = replaceArray as process.execArgv
 
 -- | The absolute pathname of the `node` executable that started the
 -- | process.
@@ -173,6 +183,7 @@ foreign import data MutableArray :: Type -> Type
 foreign import data MutableObject :: Type -> Type
 
 foreign import copyArray :: forall a. MutableArray a -> Effect (Array a)
+foreign import replaceArray :: forall a. Array a -> MutableArray a -> Effect Unit
 foreign import copyObject :: forall a. MutableObject a -> Effect (FO.Object a)
 
 lookupMutableObject :: forall a. String -> MutableObject a -> Effect (Maybe a)
