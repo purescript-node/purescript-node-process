@@ -72,15 +72,6 @@ exports.copyArray = function (xs) {
   };
 };
 
-exports.replaceArray = function (source) {
-  return function (dest) {
-    return function () {
-      dest.splice(0);
-      Array.prototype.push.apply(dest, source);
-    };
-  };
-};
-
 exports.copyObject = function (o) {
   return function () {
     return Object.assign({}, o);
