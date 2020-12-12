@@ -86,13 +86,11 @@ onSignal sig = onSignalImpl (Signal.toString sig)
 nextTick :: Effect Unit -> Effect Unit
 nextTick callback = mkEffect \_ -> process.nextTick callback
 
--- | Get an array containing the command line arguments. Be aware
--- | that this can change over the course of the program.
+-- | Get an array containing the command line arguments.
 argv :: Effect (Array String)
 argv = copyArray process.argv
 
--- | Node-specific options passed to the `node` executable. Be aware that
--- | this can change over the course of the program.
+-- | Node-specific options passed to the `node` executable.
 execArgv :: Effect (Array String)
 execArgv = copyArray process.execArgv
 
