@@ -65,3 +65,15 @@ exports.exit = function (code) {
     process.exit(code);
   };
 };
+
+exports.copyArray = function (xs) {
+  return function () {
+    return xs.slice();
+  };
+};
+
+exports.copyObject = function (o) {
+  return function () {
+    return Object.assign({}, o);
+  };
+};

@@ -86,15 +86,13 @@ onSignal sig = onSignalImpl (Signal.toString sig)
 nextTick :: Effect Unit -> Effect Unit
 nextTick callback = mkEffect \_ -> process.nextTick callback
 
--- | Get an array containing the command line arguments. Be aware
--- | that this can change over the course of the program.
+-- | Get an array containing the command line arguments.
 argv :: Effect (Array String)
-argv = mkEffect \_ -> process.argv
+argv = copyArray process.argv
 
--- | Node-specific options passed to the `node` executable. Be aware that
--- | this can change over the course of the program.
+-- | Node-specific options passed to the `node` executable.
 execArgv :: Effect (Array String)
-execArgv = mkEffect \_ -> process.execArgv
+execArgv = copyArray process.execArgv
 
 -- | The absolute pathname of the `node` executable that started the
 -- | process.
@@ -111,11 +109,11 @@ cwd = process.cwd
 
 -- | Get a copy of the current environment.
 getEnv :: Effect (FO.Object String)
-getEnv = mkEffect \_ -> process.env
+getEnv = copyObject process.env
 
 -- | Lookup a particular environment variable.
 lookupEnv :: String -> Effect (Maybe String)
-lookupEnv k = FO.lookup k <$> getEnv
+lookupEnv k = lookupMutableObject k process.env
 
 -- | Set an environment variable.
 foreign import setEnv :: String -> String -> Effect Unit
@@ -168,3 +166,15 @@ stderrIsTTY = process.stderr.isTTY
 -- | Get the Node.js version.
 version :: String
 version = process.version
+
+-- Utils
+
+foreign import data MutableArray :: Type -> Type
+foreign import data MutableObject :: Type -> Type
+
+foreign import copyArray :: forall a. MutableArray a -> Effect (Array a)
+foreign import copyObject :: forall a. MutableObject a -> Effect (FO.Object a)
+
+lookupMutableObject :: forall a. String -> MutableObject a -> Effect (Maybe a)
+lookupMutableObject k o =
+  mkEffect \_ -> FO.lookup k (unsafeCoerce o)
