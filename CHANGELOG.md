@@ -15,7 +15,7 @@ Other improvements:
 ## [v8.0.0](https://github.com/purescript-node/purescript-node-process/releases/tag/v8.0.0) - 2021-MONTH-DAY
 
 Breaking changes:
-  - Updated dependencies for PureScript 0.14 (#24)
+  - Added support for PureScript 0.14 and dropped support for all previous versions (#24)
   
 New features:
   - Added functions to register handlers for the `uncaughtException` and `unhandledRejection` events on the process (#20)
