@@ -2,7 +2,7 @@
   "name": "purescript-node-process",
   "repository": {
     "type": "git",
-    "url": "git://github.com/purescript-node/purescript-node-process"
+    "url": "https://github.com/purescript-node/purescript-node-process.git"
   },
   "license": "MIT",
   "ignore": [
@@ -12,12 +12,12 @@
     "output"
   ],
   "dependencies": {
-    "purescript-effect": "master",
-    "purescript-foreign-object": "master",
-    "purescript-maybe": "master",
-    "purescript-node-streams": "master",
-    "purescript-posix-types": "master",
-    "purescript-unsafe-coerce": "master",
-    "purescript-prelude": "master"
+    "purescript-effect": "^3.0.0",
+    "purescript-foreign-object": "^3.0.0",
+    "purescript-maybe": "^5.0.0",
+    "purescript-node-streams": "^5.0.0",
+    "purescript-posix-types": "^5.0.0",
+    "purescript-prelude": "^5.0.0",
+    "purescript-unsafe-coerce": "^5.0.0"
   }
 }
