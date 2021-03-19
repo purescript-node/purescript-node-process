@@ -8,11 +8,14 @@ Breaking changes:
 
 New features:
 
-  - Added `stdinIsTTY` as the counterpart of `process.stdin.isTTY` (#31 by @matoruru)
-
 Bugfixes:
 
 Other improvements:
+
+## [v8.1.0](https://github.com/purescript-node/purescript-node-process/releases/tag/v8.1.0) - 2021-03-19
+
+New features:
+  - Added `stdinIsTTY` as the counterpart of `process.stdin.isTTY` (#31 by @matoruru)
 
 ## [v8.0.0](https://github.com/purescript-node/purescript-node-process/releases/tag/v8.0.0) - 2021-02-26
 
