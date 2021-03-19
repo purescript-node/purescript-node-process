@@ -20,6 +20,7 @@ module Node.Process
   , stdin
   , stdout
   , stderr
+  , stdinIsTTY
   , stdoutIsTTY
   , stderrIsTTY
   , version
@@ -150,6 +151,11 @@ stdout = process.stdout
 -- | `end` will result in an exception being thrown.
 stderr :: Writable ()
 stderr = process.stderr
+
+-- | Check whether the standard input stream appears to be attached to a TTY.
+-- | It is a good idea to check this before processing the input data from stdin.
+stdinIsTTY :: Boolean
+stdinIsTTY = process.stdin.isTTY
 
 -- | Check whether the standard output stream appears to be attached to a TTY.
 -- | It is a good idea to check this before printing ANSI codes to stdout
