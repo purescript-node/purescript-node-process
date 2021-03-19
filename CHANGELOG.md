@@ -8,7 +8,7 @@ Breaking changes:
 
 New features:
 
-  - Added `stdinIsTTY` as the counterpart of `process.stdin.isTTY` (#31)
+  - Added `stdinIsTTY` as the counterpart of `process.stdin.isTTY` (#31 by @matoruru)
 
 Bugfixes:
 
