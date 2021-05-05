@@ -5,6 +5,7 @@ module Node.Process
   , onSignal
   , onUncaughtException
   , onUnhandledRejection
+  , nextTick
   , argv
   , execArgv
   , execPath
