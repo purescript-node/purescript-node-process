@@ -7,10 +7,12 @@ Notable changes to this project are documented in this file. The format is based
 Breaking changes:
 
 New features:
+- Export `nextTick` (#32 by @JordanMartinez)
 
 Bugfixes:
 
 Other improvements:
+- Fix warnings revealed by v0.14.1 PS release (#32 by @JordanMartinez)
 
 ## [v8.1.0](https://github.com/purescript-node/purescript-node-process/releases/tag/v8.1.0) - 2021-03-19
 
@@ -21,7 +23,7 @@ New features:
 
 Breaking changes:
   - Added support for PureScript 0.14 and dropped support for all previous versions (#24)
-  
+
 New features:
   - Added functions to register handlers for the `uncaughtException` and `unhandledRejection` events on the process (#20)
   - Added `unsetEnv` for deleting environment variables (#21)
