@@ -7,9 +7,15 @@ Notable changes to this project are documented in this file. The format is based
 Breaking changes:
 
 New features:
-- Export `nextTick` (#32 by @JordanMartinez)
 
 Bugfixes:
+
+Other improvements:
+
+## [v8.2.0](https://github.com/purescript-node/purescript-node-process/releases/tag/v8.2.0) - 2021-05-06
+
+New features:
+- Export `nextTick` (#32 by @JordanMartinez)
 
 Other improvements:
 - Fix warnings revealed by v0.14.1 PS release (#32 by @JordanMartinez)
@@ -17,23 +23,23 @@ Other improvements:
 ## [v8.1.0](https://github.com/purescript-node/purescript-node-process/releases/tag/v8.1.0) - 2021-03-19
 
 New features:
-  - Added `stdinIsTTY` as the counterpart of `process.stdin.isTTY` (#31 by @matoruru)
+- Added `stdinIsTTY` as the counterpart of `process.stdin.isTTY` (#31 by @matoruru)
 
 ## [v8.0.0](https://github.com/purescript-node/purescript-node-process/releases/tag/v8.0.0) - 2021-02-26
 
 Breaking changes:
-  - Added support for PureScript 0.14 and dropped support for all previous versions (#24)
+- Added support for PureScript 0.14 and dropped support for all previous versions (#24)
 
 New features:
-  - Added functions to register handlers for the `uncaughtException` and `unhandledRejection` events on the process (#20)
-  - Added `unsetEnv` for deleting environment variables (#21)
+- Added functions to register handlers for the `uncaughtException` and `unhandledRejection` events on the process (#20)
+- Added `unsetEnv` for deleting environment variables (#21)
 
 Bugfixes:
-  - Updated the implementations of `argv`, `execArgv`, and `getEnv` so they clone the argument array to ensure referential transparency (#26)
+- Updated the implementations of `argv`, `execArgv`, and `getEnv` so they clone the argument array to ensure referential transparency (#26)
 
 Other improvements:
-  - Migrated CI to GitHub Actions, updated installation instructions to use Spago, and migrated from `jshint` to `eslint` (#22)
-  - Added a changelog and pull request template (#27)
+- Migrated CI to GitHub Actions, updated installation instructions to use Spago, and migrated from `jshint` to `eslint` (#22)
+- Added a changelog and pull request template (#27)
 
 ## [v7.0.0](https://github.com/purescript-node/purescript-node-process/releases/tag/v7.0.0) - 2019-03-15
 
@@ -45,7 +51,7 @@ Other improvements:
 
 ## [v5.0.0](https://github.com/purescript-node/purescript-node-process/releases/tag/v5.0.0) - 2017-08-04
 
-- Add `OpenBSD`, `Android`, and `AIX` to `Platform` constructors (@AlexanderAA)
+- Added `OpenBSD`, `Android`, and `AIX` to `Platform` constructors (@AlexanderAA)
 - Made `Node.Process.platform` return a `Maybe Platform` to avoid crashes on unrecognised operating systems
 - Used `exception :: EXCEPTION` where appropriate instead of the previous `err :: EXCEPTION` to bring this library into line with the types used in recent versions of `purescript-exceptions` (@nwolverson)
 
