@@ -1,79 +1,79 @@
 "use strict";
 
-exports.process = process;
+export {process};
 
-exports.onBeforeExit = function (callback) {
+export function onBeforeExit(callback) {
   return function () {
     process.on("beforeExit", callback);
   };
-};
+}
 
-exports.onExit = function (callback) {
+export function onExit(callback) {
   return function () {
     process.on("exit", function (code) {
       callback(code)();
     });
   };
-};
+}
 
-exports.onUncaughtException = function (callback) {
+export function onUncaughtException(callback) {
   return function () {
     process.on("uncaughtException", function (error) {
       callback(error)();
     });
   };
-};
+}
 
-exports.onUnhandledRejection = function (callback) {
+export function onUnhandledRejection(callback) {
   return function () {
     process.on("unhandledRejection", function (error, promise) {
       callback(error)(promise)();
     });
   };
-};
+}
 
-exports.onSignalImpl = function (signal) {
+export function onSignalImpl(signal) {
   return function (callback) {
     return function () {
       process.on(signal, callback);
     };
   };
-};
+}
 
-exports.chdir = function (dir) {
+export function chdir(dir) {
   return function () {
     process.chdir(dir);
   };
-};
+}
 
-exports.setEnv = function (var_) {
+export function setEnv(var_) {
   return function (val) {
     return function () {
       process.env[var_] = val;
     };
   };
-};
+}
 
-exports.unsetEnv = function (var_) {
+export function unsetEnv(var_) {
   return function () {
     delete process.env[var_];
   };
-};
+}
 
-exports.exit = function (code) {
+export function exit(code) {
   return function () {
     process.exit(code);
   };
-};
+}
 
-exports.copyArray = function (xs) {
+export function copyArray(xs) {
   return function () {
     return xs.slice();
   };
-};
+}
 
-exports.copyObject = function (o) {
+export function copyObject(o) {
   return function () {
     return Object.assign({}, o);
   };
-};
+}
