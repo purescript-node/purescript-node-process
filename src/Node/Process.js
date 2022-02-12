@@ -1,6 +1,6 @@
 "use strict";
 
-// export {process};
+export {process};
 
 export function onBeforeExit(callback) {
   return () => {
