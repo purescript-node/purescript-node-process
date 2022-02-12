@@ -1,6 +1,7 @@
 "use strict";
 
-export {process};
+import { process } from 'process';
+export { process };
 
 export function onBeforeExit(callback) {
   return () => {
