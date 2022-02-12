@@ -1,6 +1,6 @@
 "use strict";
 
-import { process } from 'process';
+import process from 'process';
 export { process };
 
 export function onBeforeExit(callback) {
