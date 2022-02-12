@@ -1,79 +1,71 @@
 "use strict";
 
-export {process};
+// export {process};
 
 export function onBeforeExit(callback) {
-  return function () {
+  return () => {
     process.on("beforeExit", callback);
   };
 }
 
 export function onExit(callback) {
-  return function () {
-    process.on("exit", function (code) {
+  return () => {
+    process.on("exit", code => {
       callback(code)();
     });
   };
 }
 
 export function onUncaughtException(callback) {
-  return function () {
-    process.on("uncaughtException", function (error) {
+  return () => {
+    process.on("uncaughtException", error => {
       callback(error)();
     });
   };
 }
 
 export function onUnhandledRejection(callback) {
-  return function () {
-    process.on("unhandledRejection", function (error, promise) {
+  return () => {
+    process.on("unhandledRejection", (error, promise) => {
       callback(error)(promise)();
     });
   };
 }
 
 export function onSignalImpl(signal) {
-  return function (callback) {
-    return function () {
-      process.on(signal, callback);
-    };
+  return callback => () => {
+    process.on(signal, callback);
   };
 }
 
 export function chdir(dir) {
-  return function () {
+  return () => {
     process.chdir(dir);
   };
 }
 
 export function setEnv(var_) {
-  return function (val) {
-    return function () {
-      process.env[var_] = val;
-    };
+  return val => () => {
+    process.env[var_] = val;
   };
 }
 
 export function unsetEnv(var_) {
-  return function () {
+  return () => {
     delete process.env[var_];
   };
 }
 
 export function exit(code) {
-  return function () {
+  return () => {
     process.exit(code);
   };
 }
 
 export function copyArray(xs) {
-  return function () {
-    return xs.slice();
-  };
+  return () => xs.slice();
 }
 
 export function copyObject(o) {
-  return function () {
-    return Object.assign({}, o);
-  };
+  return () => Object.assign({}, o);
 }
