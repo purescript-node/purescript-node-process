@@ -1,11 +1,11 @@
 "use strict";
 
-exports.__dirname = __dirname;
-exports.__filename = __filename;
-exports.unsafeRequire = require;
+export {__dirname};
+export {__filename};
+export {require as unsafeRequire};
 
-exports.requireResolve = function (mod) {
+export function requireResolve(mod) {
   return function () {
     return require.resolve(mod);
   };
-};
+}
