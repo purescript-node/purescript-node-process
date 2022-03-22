@@ -15,8 +15,8 @@
     "purescript-effect": "master",
     "purescript-foreign-object": "master",
     "purescript-maybe": "master",
-    "purescript-node-streams": "^5.0.0",
-    "purescript-posix-types": "^5.0.0",
+    "purescript-node-streams": "master",
+    "purescript-posix-types": "master",
     "purescript-prelude": "master",
     "purescript-unsafe-coerce": "master"
   }
