@@ -1,79 +1,70 @@
-"use strict";
+import process from "process";
+export { process };
 
-exports.process = process;
-
-exports.onBeforeExit = function (callback) {
-  return function () {
+export function onBeforeExit(callback) {
+  return () => {
     process.on("beforeExit", callback);
   };
-};
+}
 
-exports.onExit = function (callback) {
-  return function () {
-    process.on("exit", function (code) {
+export function onExit(callback) {
+  return () => {
+    process.on("exit", code => {
       callback(code)();
     });
   };
-};
+}
 
-exports.onUncaughtException = function (callback) {
-  return function () {
-    process.on("uncaughtException", function (error) {
+export function onUncaughtException(callback) {
+  return () => {
+    process.on("uncaughtException", error => {
       callback(error)();
     });
   };
-};
+}
 
-exports.onUnhandledRejection = function (callback) {
-  return function () {
-    process.on("unhandledRejection", function (error, promise) {
+export function onUnhandledRejection(callback) {
+  return () => {
+    process.on("unhandledRejection", (error, promise) => {
       callback(error)(promise)();
     });
   };
-};
+}
 
-exports.onSignalImpl = function (signal) {
-  return function (callback) {
-    return function () {
-      process.on(signal, callback);
-    };
+export function onSignalImpl(signal) {
+  return callback => () => {
+    process.on(signal, callback);
   };
-};
+}
 
-exports.chdir = function (dir) {
-  return function () {
+export function chdir(dir) {
+  return () => {
     process.chdir(dir);
   };
-};
+}
 
-exports.setEnv = function (var_) {
-  return function (val) {
-    return function () {
-      process.env[var_] = val;
-    };
+export function setEnv(var_) {
+  return val => () => {
+    process.env[var_] = val;
   };
-};
+}
 
-exports.unsetEnv = function (var_) {
-  return function () {
+export function unsetEnv(var_) {
+  return () => {
     delete process.env[var_];
   };
-};
+}
 
-exports.exit = function (code) {
-  return function () {
+export function exit(code) {
+  return () => {
     process.exit(code);
   };
-};
+}
 
-exports.copyArray = function (xs) {
-  return function () {
-    return xs.slice();
-  };
-};
+export function copyArray(xs) {
+  return () => xs.slice();
+}
 
-exports.copyObject = function (o) {
-  return function () {
-    return Object.assign({}, o);
-  };
-};
+export function copyObject(o) {
+  return () => Object.assign({}, o);
+}
