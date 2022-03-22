@@ -4,6 +4,9 @@
     "sourceType": "module"
   },
   "extends": "eslint:recommended",
+  "env": {
+    "node": true
+  },
   "rules": {
     "strict": [2, "global"],
     "block-scoped-var": 2,
