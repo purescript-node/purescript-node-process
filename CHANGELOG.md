@@ -12,7 +12,7 @@ Bugfixes:
 
 Other improvements:
 
-## [v9.0.0](https://github.com/purescript-node/purescript-node-process/releases/tag/v9.0.0) - 2022-04-27
+## [v10.0.0](https://github.com/purescript-node/purescript-node-process/releases/tag/v10.0.0) - 2022-04-29
 
 Breaking changes:
 - Update project and deps to PureScript v0.15.0 (#34 by @nwolverson, @JordanMartinez, @sigma-andex)
@@ -22,6 +22,10 @@ New features:
 Bugfixes:
 
 Other improvements:
+
+## [v9.0.0](https://github.com/purescript-node/purescript-node-process/releases/tag/v9.0.0) - 2022-04-27
+
+Due to implementing a breaking change incorrectly, use v10.0.0 instead.
 
 ## [v8.2.0](https://github.com/purescript-node/purescript-node-process/releases/tag/v8.2.0) - 2021-05-06
 
