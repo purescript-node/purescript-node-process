@@ -11,6 +11,9 @@ New features:
 Bugfixes:
 
 Other improvements:
+- Bumped CI's node version to `lts/*` (#37 by @JordanMartinez)
+- Updated CI `actions/checkout` and `actions/setup-nodee` to `v3` (#37 by @JordanMartinez)
+- Format codebase & enforce formatting in CI via purs-tidy (#37 by @JordanMartinez)
 
 ## [v10.0.0](https://github.com/purescript-node/purescript-node-process/releases/tag/v10.0.0) - 2022-04-29
 
