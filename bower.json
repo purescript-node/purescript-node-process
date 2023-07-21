@@ -14,6 +14,7 @@
   "dependencies": {
     "purescript-effect": "^4.0.0",
     "purescript-foreign-object": "^4.0.0",
+    "purescript-foreign": "^7.0.0",
     "purescript-maybe": "^6.0.0",
     "purescript-node-streams": "^7.0.0",
     "purescript-posix-types": "^6.0.0",
