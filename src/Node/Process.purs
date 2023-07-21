@@ -1,10 +1,18 @@
 -- | Bindings to the global `process` object in Node.js. See also [the Node API documentation](https://nodejs.org/api/process.html)
 module Node.Process
-  ( onBeforeExit
-  , onExit
-  , onSignal
-  , onUncaughtException
-  , onUnhandledRejection
+  ( Process
+  , process
+  , beforeExitH
+  , disconnectH
+  , exitH
+  , messageH
+  , rejectionHandledH
+  , uncaughtExceptionH
+  , unhandledRejectionH
+  , mkSignalH
+  , mkSignalH'
+  , warningH
+  , workerH
   , abort
   , argv
   , argv0
@@ -71,51 +79,143 @@ import Data.Nullable (Nullable, toMaybe)
 import Data.Posix (Pid)
 import Data.Posix.Signal (Signal)
 import Data.Posix.Signal as Signal
+import Data.String as String
 import Effect (Effect)
 import Effect.Exception (Error)
-import Effect.Uncurried (EffectFn1, EffectFn2, EffectFn3, EffectFn4, mkEffectFn1, runEffectFn1, runEffectFn2, runEffectFn3, runEffectFn4)
+import Effect.Uncurried (EffectFn1, EffectFn2, EffectFn3, EffectFn4, mkEffectFn1, mkEffectFn2, runEffectFn1, runEffectFn2, runEffectFn3, runEffectFn4)
 import Foreign (Foreign)
 import Foreign.Object as FO
+import Node.EventEmitter (EventHandle(..))
+import Node.EventEmitter.UtilTypes (EventHandle0, EventHandle1, EventHandle2)
 import Node.Platform (Platform)
 import Node.Platform as Platform
 import Node.Stream (Readable, Writable)
 import Prim.Row as Row
 
--- | Register a callback to be performed when the event loop empties, and
--- | Node.js is about to exit. Asynchronous calls can be made in the callback,
--- | and if any are made, it will cause the process to continue a little longer.
-foreign import onBeforeExit :: Effect Unit -> Effect Unit
+foreign import data Process :: Type
 
--- | Register a callback to be performed when the process is about to exit.
--- | Any work scheduled via asynchronous calls made here will not be performed
--- | in time.
+foreign import process :: Process
+
+-- | The 'beforeExit' event is emitted when Node.js empties its event loop and has no additional work to schedule. 
+-- | Normally, the Node.js process will exit when there is no work scheduled, but a listener registered on the 
+-- | 'beforeExit' event can make asynchronous calls, and thereby cause the Node.js process to continue.
+-- | 
+-- | The listener callback function is invoked with the value of process.exitCode passed as the only argument.
+-- | The 'beforeExit' event is not emitted for conditions causing explicit termination, 
+-- | such as calling `process.exit()` or uncaught exceptions.
+-- | The 'beforeExit' should not be used as an alternative to the 'exit' event unless the 
+-- | intention is to schedule additional work.
+beforeExitH :: EventHandle1 Process Int
+beforeExitH = EventHandle "beforeExit" mkEffectFn1
+
+disconnectH :: EventHandle0 Process
+disconnectH = EventHandle "disconnect" identity
+
+-- | The 'exit' event is emitted when the Node.js process is about to exit as a result of either:
+-- | - The process.exit() method being called explicitly;
+-- | - The Node.js event loop no longer having any additional work to perform.
 -- |
--- | The argument to the callback is the exit code which the process is about
--- | to exit with.
-foreign import onExit :: (Int -> Effect Unit) -> Effect Unit
-
--- | Install a handler for uncaught exceptions. The callback will be called
--- | when the process emits the `uncaughtException` event. The handler
--- | currently does not expose the second `origin` argument from the Node 12
--- | version of this event to maintain compatibility with older Node versions.
-foreign import onUncaughtException :: (Error -> Effect Unit) -> Effect Unit
-
--- | Install a handler for unhandled promise rejections. The callback will be
--- | called when the process emits the `unhandledRejection` event.
+-- | Listener functions **must** only perform **synchronous** operations. 
+-- | The Node.js process will exit immediately after calling the 'exit' event listeners causing 
+-- | any additional work still queued in the event loop to be abandoned.
+-- | (Maintainer note: I believe the above translates to
+-- | "Only synchronous (i.e. `Effect`) code can be run in the resulting handler.
+-- | If you need asynchronous (i.e. `Aff`) code, use `beforeExitH`.")
 -- |
--- | The first argument to the handler can be whatever type the unhandled
--- | Promise yielded on rejection (typically, but not necessarily, an `Error`).
+-- | There is no way to prevent the exiting of the event loop at this point, and once all 'exit' 
+-- | listeners have finished running the Node.js process will terminate.
+-- | The listener callback function is invoked with the exit code specified either by the 
+-- | `process.exitCode` property, or the exitCode argument passed to the `process.exit()` method.
+exitH :: EventHandle1 Process Int
+exitH = EventHandle "exit" mkEffectFn1
+
+messageH :: EventHandle Process (Foreign -> Maybe Foreign -> Effect Unit) (EffectFn2 Foreign (Nullable Foreign) Unit)
+messageH = EventHandle "message" \cb -> mkEffectFn2 \a b -> cb a (toMaybe b)
+
+-- | The 'rejectionHandled' event is emitted whenever a Promise has been rejected and an error handler was attached to it (using promise.catch(), for example) later than one turn of the Node.js event loop.
+-- | 
+-- | The Promise object would have previously been emitted in an 'unhandledRejection' event, but during the course of processing gained a rejection handler.
+-- | 
+-- | There is no notion of a top level for a Promise chain at which rejections can always be handled. Being inherently asynchronous in nature, a Promise rejection can be handled at a future point in time, possibly much later than the event loop turn it takes for the 'unhandledRejection' event to be emitted.
+-- | 
+-- | Another way of stating this is that, unlike in synchronous code where there is an ever-growing list of unhandled exceptions, with Promises there can be a growing-and-shrinking list of unhandled rejections.
+-- | 
+-- | In synchronous code, the 'uncaughtException' event is emitted when the list of unhandled exceptions grows.
+-- | 
+-- | In asynchronous code, the 'unhandledRejection' event is emitted when the list of unhandled rejections grows, and the 'rejectionHandled' event is emitted when the list of unhandled rejections shrinks.
+rejectionHandledH :: EventHandle1 Process Foreign
+rejectionHandledH = EventHandle "rejectionHandled" mkEffectFn1
+
+-- | Args:
+-- | - `err` <Error> The uncaught exception.
+-- | - `origin` <string> Indicates if the exception originates from an unhandled rejection or from a synchronous error. 
+-- |    Can either be 'uncaughtException' or 'unhandledRejection'. 
+-- |    The latter is used when an exception happens in a Promise based async context (or if a Promise is rejected) 
+-- |    and `--unhandled-rejections` flag set to `strict` or `throw` (which is the default) and 
+-- |    the rejection is not handled, or when a rejection happens during the command line entry point's 
+-- |    ES module static loading phase.
 -- |
--- | The handler currently does not expose the type of the second argument,
--- | which is a `Promise`, in order to allow users of this library to choose
--- | their own PureScript `Promise` bindings.
-foreign import onUnhandledRejection :: forall a b. (a -> b -> Effect Unit) -> Effect Unit
+-- | The 'uncaughtException' event is emitted when an uncaught JavaScript exception bubbles 
+-- | all the way back to the event loop. By default, Node.js handles such exceptions 
+-- | by printing the stack trace to `stderr` and exiting with code 1, 
+-- | overriding any previously set `process.exitCode`. 
+-- | Adding a handler for the 'uncaughtException' event overrides this default behavior. 
+-- | Alternatively, change the process.exitCode in the 'uncaughtException' handler which will 
+-- | result in the process exiting with the provided exit code. Otherwise, in the presence of 
+-- | such handler the process will exit with 0.
+-- |
+-- | 'uncaughtException' is a crude mechanism for exception handling intended to be used only as a last resort. The event should not be used as an equivalent to On Error Resume Next. Unhandled exceptions inherently mean that an application is in an undefined state. Attempting to resume application code without properly recovering from the exception can cause additional unforeseen and unpredictable issues.
+-- | 
+-- | Exceptions thrown from within the event handler will not be caught. Instead the process will exit with a non-zero exit code and the stack trace will be printed. This is to avoid infinite recursion.
+-- | 
+-- | Attempting to resume normally after an uncaught exception can be similar to pulling out the power cord when upgrading a computer. Nine out of ten times, nothing happens. But the tenth time, the system becomes corrupted.
+-- | 
+-- | The correct use of 'uncaughtException' is to perform synchronous cleanup of allocated resources (e.g. file descriptors, handles, etc) before shutting down the process. It is not safe to resume normal operation after 'uncaughtException'.
+-- | 
+-- | To restart a crashed application in a more reliable way, whether 'uncaughtException' is emitted or not, an external monitor should be employed in a separate process to detect application failures and recover or restart as needed.
+uncaughtExceptionH :: EventHandle2 Process Error String
+uncaughtExceptionH = EventHandle "uncaughtException" \cb -> mkEffectFn2 \a b -> cb a b
 
-foreign import onSignalImpl :: String -> Effect Unit -> Effect Unit
+-- | Args:
+-- | - `reason` <Error> | <any> The object with which the promise was rejected (typically an Error object).
+-- | - `promise` <Promise> The rejected promise.
+-- |
+-- | The 'unhandledRejection' event is emitted whenever a Promise is rejected and no error handler is attached to the promise within a turn of the event loop. When programming with Promises, exceptions are encapsulated as "rejected promises". Rejections can be caught and handled using promise.catch() and are propagated through a Promise chain. The 'unhandledRejection' event is useful for detecting and keeping track of promises that were rejected whose rejections have not yet been handled.
+unhandledRejectionH :: EventHandle2 Process Foreign Foreign
+unhandledRejectionH = EventHandle "unhandledRejection" \cb -> mkEffectFn2 \a b -> cb a b
 
--- | Install a handler for a particular signal.
-onSignal :: Signal -> Effect Unit -> Effect Unit
-onSignal sig = onSignalImpl (Signal.toString sig)
+-- | Args:
+-- | - `warning` <Error> Key properties of the warning are:
+-- |   - `name` <string> The name of the warning. Default: 'Warning'.
+-- |   - `message` <string> A system-provided description of the warning.
+-- |   - `stack` <string> A stack trace to the location in the code where the warning was issued.
+-- | 
+-- | The 'warning' event is emitted whenever Node.js emits a process warning.
+-- | 
+-- | A process warning is similar to an error in that it describes exceptional conditions that are being brought to the user's attention. However, warnings are not part of the normal Node.js and JavaScript error handling flow. Node.js can emit warnings whenever it detects bad coding practices that could lead to sub-optimal application performance, bugs, or security vulnerabilities.
+-- | By default, Node.js will print process warnings to stderr. The --no-warnings command-line option can be used to suppress the default console output but the 'warning' event will still be emitted by the process object.
+warningH :: EventHandle1 Process Error
+warningH = EventHandle "warning" mkEffectFn1
+
+-- | Args:
+-- | - `worker` <Worker> The <Worker> that was created.
+-- | 
+-- | The 'worker' event is emitted after a new <Worker> thread has been created.
+workerH :: EventHandle1 Process Foreign
+workerH = EventHandle "worker" mkEffectFn1
+
+-- | Rather than support an `EventHandle` for every possible `Signal`,
+-- | this function provides one a convenient way for constructing one for any given signal.
+-- |
+-- | See Node docs: https://nodejs.org/dist/latest-v18.x/docs/api/process.html#signal-events
+mkSignalH :: Signal -> EventHandle Process (Effect Unit) (Effect Unit)
+mkSignalH sig = EventHandle (Signal.toString sig) identity
+
+-- | Same as `mkSignalH` but allows for more options in case the `Signal` ADT is missing any.
+-- |
+-- | See Node docs: https://nodejs.org/dist/latest-v18.x/docs/api/process.html#signal-events
+mkSignalH' :: String -> EventHandle Process (Effect Unit) (Effect Unit)
+mkSignalH' sig = EventHandle (String.toUpper sig) identity
 
 -- | The `process.abort()` method causes the Node.js process to exit immediately and generate a core file.
 -- | This feature is not available in Worker threads.
