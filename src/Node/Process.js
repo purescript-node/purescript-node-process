@@ -39,7 +39,7 @@ export function onSignalImpl(signal) {
 export const nextTickImpl = (cb) => process.nextTick(cb);
 export const argv = () => process.argv.slice();
 export const execArgv = () => process.execArgv.slice();
-export const execPath = () => process.execPath
+export const execPath = () => process.execPath;
 export const chdirImpl = (dir) => process.chdir(dir);
 export const cwd = () => process.cwd;
 export const getEnv = () => Object.assign({}, process.env);
