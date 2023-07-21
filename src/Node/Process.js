@@ -1,41 +1,6 @@
 import process from "process";
 
-export function onBeforeExit(callback) {
-  return () => {
-    process.on("beforeExit", callback);
-  };
-}
-
-export function onExit(callback) {
-  return () => {
-    process.on("exit", code => {
-      callback(code)();
-    });
-  };
-}
-
-export function onUncaughtException(callback) {
-  return () => {
-    process.on("uncaughtException", error => {
-      callback(error)();
-    });
-  };
-}
-
-export function onUnhandledRejection(callback) {
-  return () => {
-    process.on("unhandledRejection", (error, promise) => {
-      callback(error)(promise)();
-    });
-  };
-}
-
-export function onSignalImpl(signal) {
-  return callback => () => {
-    process.on(signal, callback);
-  };
-}
-
+export { process };
 export const abortImpl = process.abort ? () => process.abort() : null;
 export const argv = () => process.argv.slice();
 export const argv0 = () => process.argv0;

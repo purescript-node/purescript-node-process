@@ -27,6 +27,8 @@ Breaking changes:
 
   exit' :: forall a. Int -> Effect a
   ```
+- Bump `node-streams` to `v8.0.0` (#40 by @JordanMartinez)
+- Migrate `onEventName` to `eventH`-style event handling API (#40 by @JordanMartinez)
 
 New features:
 - Add missing APIs (#39 by @JordanMartinez)
