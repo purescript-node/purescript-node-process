@@ -1,5 +1,4 @@
 import process from "process";
-export { process };
 
 export function onBeforeExit(callback) {
   return () => {
@@ -37,34 +36,28 @@ export function onSignalImpl(signal) {
   };
 }
 
-export function chdir(dir) {
-  return () => {
-    process.chdir(dir);
-  };
-}
+export const nextTickImpl = (cb) => process.nextTick(cb);
+export const argv = () => process.argv.slice();
+export const execArgv = () => process.execArgv.slice();
+export const execPath = () => process.execPath
+export const chdirImpl = (dir) => process.chdir(dir);
+export const cwd = () => process.cwd;
+export const getEnv = () => Object.assign({}, process.env);
+export const unsafeGetEnv = () => process.env;
+export const setEnvImpl = (key, val) => {
+  process.env[key] = val;
+};
+export const unsetEnvImpl = (key) => {
+  delete process.env[key];
+};
+export const pid = process.pid;
+export const platformStr = process.platform;
+export const exitImpl = (code) => process.exit(code);
+export const stdin = process.stdin;
+export const stdout = process.stdout;
+export const stderr = process.stderr;
+export const stdinIsTTY = process.stdinIsTTY;
+export const stdoutIsTTY = process.stdoutIsTTY;
+export const stderrIsTTY = process.stderrIsTTY;
+export const version = process.version;
 
-export function setEnv(var_) {
-  return val => () => {
-    process.env[var_] = val;
-  };
-}
-
-export function unsetEnv(var_) {
-  return () => {
-    delete process.env[var_];
-  };
-}
-
-export function exit(code) {
-  return () => {
-    process.exit(code);
-  };
-}
-
-export function copyArray(xs) {
-  return () => xs.slice();
-}
-
-export function copyObject(o) {
-  return () => Object.assign({}, o);
-}

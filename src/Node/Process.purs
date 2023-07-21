@@ -35,17 +35,11 @@ import Data.Posix.Signal (Signal)
 import Data.Posix.Signal as Signal
 import Effect (Effect)
 import Effect.Exception (Error)
+import Effect.Uncurried (EffectFn1, EffectFn2, runEffectFn1, runEffectFn2)
 import Foreign.Object as FO
 import Node.Platform (Platform)
 import Node.Platform as Platform
 import Node.Stream (Readable, Writable)
-import Unsafe.Coerce (unsafeCoerce)
-
--- YOLO
-foreign import process :: forall props. { | props }
-
-mkEffect :: forall a. (Unit -> a) -> Effect a
-mkEffect = unsafeCoerce
 
 -- | Register a callback to be performed when the event loop empties, and
 -- | Node.js is about to exit. Asynchronous calls can be made in the callback,
@@ -86,102 +80,101 @@ onSignal sig = onSignalImpl (Signal.toString sig)
 -- | Register a callback to run as soon as the current event loop runs to
 -- | completion.
 nextTick :: Effect Unit -> Effect Unit
-nextTick callback = mkEffect \_ -> process.nextTick callback
+nextTick cb = runEffectFn1 nextTickImpl cb
 
--- | Get an array containing the command line arguments.
-argv :: Effect (Array String)
-argv = copyArray process.argv
+foreign import nextTickImpl :: EffectFn1 (Effect Unit) (Unit)
 
--- | Node-specific options passed to the `node` executable.
-execArgv :: Effect (Array String)
-execArgv = copyArray process.execArgv
+-- | Get a copy of the array containing the command line arguments.
+foreign import argv :: Effect (Array String)
+
+-- | Get a copy of the Node-specific options passed to the `node` executable.
+foreign import execArgv :: Effect (Array String)
 
 -- | The absolute pathname of the `node` executable that started the
 -- | process.
-execPath :: Effect String
-execPath = mkEffect \_ -> process.execPath
+foreign import execPath :: Effect (String)
 
 -- | Change the current working directory of the process. If the current
 -- | directory could not be changed, an exception will be thrown.
-foreign import chdir :: String -> Effect Unit
+chdir :: String -> Effect Unit
+chdir dir = runEffectFn1 chdirImpl dir
+
+foreign import chdirImpl :: EffectFn1 (String) (Unit)
 
 -- | Get the current working directory of the process.
-cwd :: Effect String
-cwd = process.cwd
+foreign import cwd :: Effect (String)
 
 -- | Get a copy of the current environment.
-getEnv :: Effect (FO.Object String)
-getEnv = copyObject process.env
+-- | If you only want to look up a value without paying
+-- | for the overhead of the copy, use `lookupEnv`.
+foreign import getEnv :: Effect (FO.Object String)
+
+-- | Get the current environment object without copying it.
+-- | Any mutations to the returned object 
+-- | or any mutations via `unsetEnv` and `setEnv`
+-- | will affect all values that were obtained 
+-- | via this function.
+-- | Thus, this is an internal function that is
+-- | not exported.
+foreign import unsafeGetEnv :: Effect (FO.Object String)
 
 -- | Lookup a particular environment variable.
 lookupEnv :: String -> Effect (Maybe String)
-lookupEnv k = lookupMutableObject k process.env
+lookupEnv k = map (FO.lookup k) $ unsafeGetEnv
 
 -- | Set an environment variable.
-foreign import setEnv :: String -> String -> Effect Unit
+setEnv :: String -> String -> Effect Unit
+setEnv key value = runEffectFn2 setEnvImpl key value
+
+foreign import setEnvImpl :: EffectFn2 (String) (String) (Unit)
 
 -- | Delete an environment variable.
 -- | Use case: to hide secret environment variable from child processes.
-foreign import unsetEnv :: String -> Effect Unit
+unsetEnv :: String -> Effect Unit
+unsetEnv key = runEffectFn1 unsetEnvImpl key
 
-pid :: Pid
-pid = process.pid
+foreign import unsetEnvImpl :: EffectFn1 (String) (Unit)
+
+foreign import pid :: Pid
 
 platform :: Maybe Platform
 platform = Platform.fromString platformStr
 
-platformStr :: String
-platformStr = process.platform
+foreign import platformStr :: String
 
 -- | Cause the process to exit with the supplied integer code. An exit code
 -- | of 0 is normally considered successful, and anything else is considered a
 -- | failure.
-foreign import exit :: forall a. Int -> Effect a
+exit :: forall a. Int -> Effect a
+exit code = runEffectFn1 exitImpl code
+
+foreign import exitImpl :: forall a. EffectFn1 (Int) (a)
 
 -- | The standard input stream. Note that this stream will never emit an `end`
 -- | event, so any handlers attached via `onEnd` will never be called.
-stdin :: Readable ()
-stdin = process.stdin
+foreign import stdin :: Readable ()
 
 -- | The standard output stream. Note that this stream cannot be closed; calling
 -- | `end` will result in an exception being thrown.
-stdout :: Writable ()
-stdout = process.stdout
+foreign import stdout :: Writable ()
 
 -- | The standard error stream. Note that this stream cannot be closed; calling
 -- | `end` will result in an exception being thrown.
-stderr :: Writable ()
-stderr = process.stderr
+foreign import stderr :: Writable ()
 
 -- | Check whether the standard input stream appears to be attached to a TTY.
 -- | It is a good idea to check this before processing the input data from stdin.
-stdinIsTTY :: Boolean
-stdinIsTTY = process.stdin.isTTY
+foreign import stdinIsTTY :: Boolean
 
 -- | Check whether the standard output stream appears to be attached to a TTY.
 -- | It is a good idea to check this before printing ANSI codes to stdout
 -- | (e.g. for coloured text in the terminal).
-stdoutIsTTY :: Boolean
-stdoutIsTTY = process.stdout.isTTY
+foreign import stdoutIsTTY :: Boolean
 
 -- | Check whether the standard error stream appears to be attached to a TTY.
 -- | It is a good idea to check this before printing ANSI codes to stderr
 -- | (e.g. for coloured text in the terminal).
-stderrIsTTY :: Boolean
-stderrIsTTY = process.stderr.isTTY
+foreign import stderrIsTTY :: Boolean
 
 -- | Get the Node.js version.
-version :: String
-version = process.version
-
--- Utils
-
-foreign import data MutableArray :: Type -> Type
-foreign import data MutableObject :: Type -> Type
-
-foreign import copyArray :: forall a. MutableArray a -> Effect (Array a)
-foreign import copyObject :: forall a. MutableObject a -> Effect (FO.Object a)
-
-lookupMutableObject :: forall a. String -> MutableObject a -> Effect (Maybe a)
-lookupMutableObject k o =
-  mkEffect \_ -> FO.lookup k (unsafeCoerce o)
+foreign import version :: String
