@@ -5,16 +5,65 @@ Notable changes to this project are documented in this file. The format is based
 ## [Unreleased]
 
 Breaking changes:
+- Breaking changes to `exit` (#39 by @JordanMartinez)
+
+  The `exit` API provides two versions:
+    - unspecified exit code: `process.exit();`
+    - specified exit code: `process.exit(1);`
+
+  Previously, the type signature of `exit` only allowed
+  the second usage. This change supports both.
+  Followin the pattern used in other Node libraries
+  of a `'` (prime) character indicating a
+  variant of the function that takes a callback or optons
+  are, the type signature of `exit` has changed:
+
+  ```purs
+  -- before:
+  exit :: forall a. Int -> Effect a
+
+  -- after:
+  exit :: forall a. Effect a
+
+  exit' :: forall a. Int -> Effect a
+  ```
 
 New features:
+- Add missing APIs (#39 by @JordanMartinez)
+
+  - Process-related things
+    - `abort`
+    - `setExitCode`
+    - `getExitCode`
+    - `kill`/`killStr`/`kilInt`
+    - `nextTick'`
+    - `ppid`
+    - Uncaught exception capture callback
+      - `hasUncaughtExceptionCaptureCallback`
+      - `setUncaughtExceptionCaptureCallback`
+      - `clearUncaughtExceptionCaptureCallback`
+    - `getTitle`/`setTitle`
+  - ChildProcess-related things
+    - `channelRef`/`channelUnref`
+    - `connected`
+    - `unsafeSend`/`unsafeSendOpts`/`unsafeSendCb`/`unsafeSendOptsCb`
+  - Diagnostic-related things
+    - `config`
+    - `cpuUsage`/`cpuUsageDiff`
+    - `debugPort`
+    - `memoryUsage`/`memoryUsageRss`
+    - `resourceUsage`
+    - `uptime`
 
 Bugfixes:
+- Docs: discourage `exit` in favor of `setExitCode` (#39 by @JordanMartinez)
 
 Other improvements:
 - Bumped CI's node version to `lts/*` (#37 by @JordanMartinez)
 - Updated CI `actions/checkout` and `actions/setup-nodee` to `v3` (#37 by @JordanMartinez)
 - Format codebase & enforce formatting in CI via purs-tidy (#37 by @JordanMartinez)
 - Use uncurried FFI (#38 by @JordanMartinez)
+- Reordered export list (#39 by @JordanMartinez)
 
 ## [v10.0.0](https://github.com/purescript-node/purescript-node-process/releases/tag/v10.0.0) - 2022-04-29
 
