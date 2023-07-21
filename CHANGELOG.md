@@ -5,6 +5,16 @@ Notable changes to this project are documented in this file. The format is based
 ## [Unreleased]
 
 Breaking changes:
+
+New features:
+
+Bugfixes:
+
+Other improvements:
+
+## [v11.0.0](https://github.com/purescript-node/purescript-node-process/releases/tag/v11.0.0) - 2023-07-21
+
+Breaking changes:
 - Breaking changes to `exit` (#39 by @JordanMartinez)
 
   The `exit` API provides two versions:
@@ -29,6 +39,30 @@ Breaking changes:
   ```
 - Bump `node-streams` to `v8.0.0` (#40 by @JordanMartinez)
 - Migrate `onEventName` to `eventH`-style event handling API (#40 by @JordanMartinez)
+
+  ```purs
+  -- Before
+  onExit \exitCode -> ...
+
+  -- After
+  process # on_ exitH \exitCode ->
+  ```
+
+  See https://pursuit.purescript.org/packages/purescript-node-event-emitter/3.0.0/docs/Node.EventEmitter for more details.
+
+  `onSignal` has many possible enumerations, so a generic one was provided instead:
+  ```purs
+  -- Before
+  onSignalExit SIGTERM do
+    ...
+
+  -- After
+  process # on_ (mkSignalH SIGTERM) do
+    ...
+  -- Or, is `Signal` doesn't have it
+  process # on_ (mkSignalH' "SIGTERM") do
+    ...
+  ```
 
 New features:
 - Add missing APIs (#39 by @JordanMartinez)
