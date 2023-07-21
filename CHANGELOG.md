@@ -12,7 +12,7 @@ Bugfixes:
 
 Other improvements:
 
-## [v11.0.0](https://github.com/purescript-node/purescript-node-process/releases/tag/v11.0.0) - 2023-07-21
+## [v11.0.1](https://github.com/purescript-node/purescript-node-process/releases/tag/v11.0.1) - 2023-07-21
 
 Bugfixes:
 - Fix FFI for `channelRef`/`channelUnref` (#40 by @JordanMartinez)
