@@ -78,7 +78,7 @@ import Prelude
 
 import Data.Maybe (Maybe)
 import Data.Nullable (Nullable, toMaybe)
-import Data.Posix (Gid(..), Pid, Uid(..))
+import Data.Posix (Gid, Pid, Uid)
 import Data.Posix.Signal (Signal)
 import Data.Posix.Signal as Signal
 import Data.String as String
