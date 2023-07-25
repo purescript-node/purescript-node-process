@@ -38,6 +38,8 @@ module Node.Process
   , exit'
   , setExitCode
   , getExitCode
+  , getGid
+  , getUid
   , hasUncaughtExceptionCaptureCallback
   , kill
   , killStr
@@ -76,7 +78,7 @@ import Prelude
 
 import Data.Maybe (Maybe)
 import Data.Nullable (Nullable, toMaybe)
-import Data.Posix (Pid)
+import Data.Posix (Gid(..), Pid, Uid(..))
 import Data.Posix.Signal (Signal)
 import Data.Posix.Signal as Signal
 import Data.String as String
@@ -383,6 +385,16 @@ getExitCode :: Effect (Maybe Int)
 getExitCode = map toMaybe getExitCodeImpl
 
 foreign import getExitCodeImpl :: Effect (Nullable Int)
+
+getGid :: Effect (Maybe Gid)
+getGid = map toMaybe getGidImpl
+
+foreign import getGidImpl :: Effect (Nullable Gid)
+
+getUid :: Effect (Maybe Uid)
+getUid = map toMaybe getUidImpl
+
+foreign import getUidImpl :: Effect (Nullable Uid)
 
 foreign import hasUncaughtExceptionCaptureCallback :: Effect (Boolean)
 

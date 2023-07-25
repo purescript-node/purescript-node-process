@@ -12,6 +12,11 @@ Bugfixes:
 
 Other improvements:
 
+## [v11.1.0](https://github.com/purescript-node/purescript-node-process/releases/tag/v11.1.0) - 2023-07-24
+
+New Features:
+- Add FFI for `getUid`/`getPid` (#41 by @JordanMartinez)
+
 ## [v11.0.1](https://github.com/purescript-node/purescript-node-process/releases/tag/v11.0.1) - 2023-07-21
 
 Bugfixes:

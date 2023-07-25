@@ -30,6 +30,8 @@ export const setExitCodeImpl = (code) => {
   process.exitCode = code;
 };
 export const getExitCodeImpl = () => process.exitCode;
+export const getGidImpl = () => process.getGid();
+export const getUidImpl = () => process.getUid();
 export const hasUncaughtExceptionCaptureCallback = () => process.hasUncaughtExceptionCaptureCallback;
 export const killImpl = (pid) => process.kill(pid);
 export const killStrImpl = (pid, sig) => process.kill(pid, sig);
