@@ -12,7 +12,12 @@ Bugfixes:
 
 Other improvements:
 
-## [v11.1.1](https://github.com/purescript-node/purescript-node-process/releases/tag/v11.1.0) - 2023-07-25
+## [v11.2.0](https://github.com/purescript-node/purescript-node-process/releases/tag/v11.2.0) - 2023-07-25
+
+Bugfixes:
+- Update `node-streams` to `v9.0.0` to fix FFI issues (#45 by @JordanMartinez)
+
+## [v11.1.1](https://github.com/purescript-node/purescript-node-process/releases/tag/v11.1.1) - 2023-07-25
 
 Bugfixes:
 - Fixes FFI for `cwd` (#44 by @JordanMartinez)
