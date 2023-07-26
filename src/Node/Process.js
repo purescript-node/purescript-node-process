@@ -11,7 +11,7 @@ export const config = () => Object.assign({}, process.config);
 export const connected = () => process.connected;
 export const cpuUsage = () => process.cpuUsage();
 export const cpuUsageDiffImpl = (prevVal) => process.cpuUsage(prevVal);
-export const cwd = () => process.cwd;
+export const cwd = () => process.cwd();
 export const debugPort = process.debugPort;
 export const disconnectImpl = process.disconnect ? () => process.disconnect() : null;
 export const getEnv = () => Object.assign({}, process.env);
