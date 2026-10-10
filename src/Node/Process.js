@@ -4,8 +4,10 @@ export { process };
 export const abortImpl = process.abort ? () => process.abort() : null;
 export const argv = () => process.argv.slice();
 export const argv0 = () => process.argv0;
-export const channelRefImpl = process.channel && process.channel.ref ? () => process.channel.ref() : null;
-export const channelUnrefImpl = process.channel && process.channel.unref ? () => process.channel.unref() : null;
+export const channelRefImpl =
+  process.channel && process.channel.ref ? () => process.channel.ref() : null;
+export const channelUnrefImpl =
+  process.channel && process.channel.unref ? () => process.channel.unref() : null;
 export const chdirImpl = (dir) => process.chdir(dir);
 export const config = () => Object.assign({}, process.config);
 export const connected = () => process.connected;
@@ -32,7 +34,8 @@ export const setExitCodeImpl = (code) => {
 export const getExitCodeImpl = () => process.exitCode;
 export const getGidImpl = () => process.getgid();
 export const getUidImpl = () => process.getuid();
-export const hasUncaughtExceptionCaptureCallback = () => process.hasUncaughtExceptionCaptureCallback;
+export const hasUncaughtExceptionCaptureCallback = () =>
+  process.hasUncaughtExceptionCaptureCallback;
 export const killImpl = (pid) => process.kill(pid);
 export const killStrImpl = (pid, sig) => process.kill(pid, sig);
 export const killIntImpl = (pid, int) => process.kill(pid, int);
@@ -48,8 +51,10 @@ export const sendImpl = (msg, handle) => process.send(msg, handle);
 export const sendOptsImpl = (msg, handle, opts) => process.send(msg, handle, opts);
 export const sendCbImpl = (msg, handle, cb) => process.send(msg, handle, cb);
 export const sendOptsCbImpl = (msg, handle, opts, cb) => process.send(msg, handle, opts, cb);
-export const setUncaughtExceptionCaptureCallbackImpl = (cb) => process.setUncaughtExceptionCaptureCallback(cb);
-export const clearUncaughtExceptionCaptureCallback = () => process.setUncaughtExceptionCaptureCallback(null);
+export const setUncaughtExceptionCaptureCallbackImpl = (cb) =>
+  process.setUncaughtExceptionCaptureCallback(cb);
+export const clearUncaughtExceptionCaptureCallback = () =>
+  process.setUncaughtExceptionCaptureCallback(null);
 export const stdin = process.stdin;
 export const stdout = process.stdout;
 export const stderr = process.stderr;
@@ -62,4 +67,3 @@ export const setTitleImpl = (v) => {
 };
 export const uptime = () => process.uptime();
 export const version = process.version;
-
