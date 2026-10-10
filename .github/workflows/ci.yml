@@ -18,18 +18,16 @@ jobs:
           cache: npm
 
       - name: Install dependencies
-        run: |
-          npm install -g bower
-          npm ci
-          bower install --production
+        run: npm ci
+
+      - name: Lint FFI
+        run: npm run lint
 
       - name: Build source
         run: npm run-script build
 
       - name: Run tests
-        run: |
-          bower install
-          npm run-script test --if-present
+        run: npm test
 
       - name: Check Formatting
         run: npm run format:check

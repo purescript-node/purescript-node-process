@@ -2,6 +2,5 @@
 !/.gitignore
 !/.oxfmtrc.json
 !/.github/
-/bower_components/
 /node_modules/
 /output/
