@@ -10,21 +10,17 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v6
 
-      - uses: purescript-contrib/setup-purescript@main
+      - uses: actions/setup-node@v6
         with:
-          purescript: "unstable"
-          purs-tidy: "latest"
-
-      - uses: actions/setup-node@v3
-        with:
-          node-version: "lts/*"
+          node-version: "24"
+          cache: npm
 
       - name: Install dependencies
         run: |
           npm install -g bower
-          npm install
+          npm ci
           bower install --production
 
       - name: Build source
@@ -36,6 +32,4 @@ jobs:
           npm run-script test --if-present
 
       - name: Check Formatting
-        if: runner.os == 'Linux'
-        run: |
-          npx purs-tidy check src
+        run: npm run format:check
