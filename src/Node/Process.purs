@@ -32,6 +32,8 @@ module Node.Process
   , lookupEnv
   , setEnv
   , unsetEnv
+  , loadEnvFile
+  , loadEnvFile'
   , execArgv
   , execPath
   , exit
@@ -331,6 +333,20 @@ unsetEnv :: String -> Effect Unit
 unsetEnv key = runEffectFn1 unsetEnvImpl key
 
 foreign import unsetEnvImpl :: EffectFn1 (String) (Unit)
+
+-- | Load the `.env` file in the current working directory into `process.env`.
+-- | Variables already present in the environment are not overwritten.
+-- | Throws if the file does not exist. Lines that cannot be parsed are skipped.
+loadEnvFile :: Effect Unit
+loadEnvFile = runEffectFn1 loadEnvFileImpl ".env"
+
+-- | Load the given `.env`-formatted file into `process.env`.
+-- | Variables already present in the environment are not overwritten.
+-- | Throws if the file does not exist. Lines that cannot be parsed are skipped.
+loadEnvFile' :: String -> Effect Unit
+loadEnvFile' path = runEffectFn1 loadEnvFileImpl path
+
+foreign import loadEnvFileImpl :: EffectFn1 String Unit
 
 -- | Get a copy of the Node-specific options passed to the `node` executable.
 foreign import execArgv :: Effect (Array String)

@@ -7,6 +7,7 @@ Notable changes to this project are documented in this file. The format is based
 Breaking changes:
 
 New features:
+- Add FFI for `process.loadEnvFile` as `loadEnvFile` and `loadEnvFile'` (#47 by @m-rinaldi)
 
 Bugfixes:
 
