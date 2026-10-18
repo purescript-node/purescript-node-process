@@ -24,6 +24,7 @@ export const setEnvImpl = (key, val) => {
 export const unsetEnvImpl = (key) => {
   delete process.env[key];
 };
+export const loadEnvFileImpl = (path) => process.loadEnvFile(path);
 export const execArgv = () => process.execArgv.slice();
 export const execPath = () => process.execPath;
 export const exit = () => process.exit();
