@@ -16,7 +16,7 @@ package:
     main: Test.Main
     dependencies: []
   publish:
-    version: 11.2.1
+    version: 11.3.0
     license: MIT
     location:
       githubOwner: purescript-node
